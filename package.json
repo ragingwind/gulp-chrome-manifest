@@ -1,6 +1,6 @@
 {
   "name": "gulp-chrome-manifest",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Gulp plugin for Chrome Manifest",
   "homepage": "https://github.com/ragingwind/gulp-chrome-manifest",
   "author": {
