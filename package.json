@@ -1,0 +1,37 @@
+{
+  "name": "gulp-chrome-manifest",
+  "version": "0.0.0",
+  "description": "Gulp plugin for Chrome Manifest",
+  "homepage": "https://github.com/ragingwind/gulp-chrome-manifest",
+  "author": {
+    "name": "ragingwind",
+    "email": "ragingwind@gmail.com",
+    "url": "http://ragingwind.me"
+  },
+  "repository": "ragingwind/gulp-chrome-manifest",
+  "license": "MIT",
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "gulp-chrome-manifest",
+    "gulp",
+    "gulp plugin",
+    "chrome",
+    "chrome manifest"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-nodeunit": "^0.4.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "load-grunt-tasks": "^1.0.0",
+    "time-grunt": "^1.0.0",
+    "grunt-mocha-cli": "^1.11.0",
+    "jshint-stylish": "^1.0.0"
+  },
+  "scripts": {
+    "test": "grunt"
+  }
+}
