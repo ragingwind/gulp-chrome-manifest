@@ -21,13 +21,18 @@ var manifest = require('gulp-chrome-manifest');
 gulp.task('manifest', function() {
     return gulp.src(['app/manifest.json'])
         .pipe(manifest({
-            buildnumber: 'dest',
-            exclude: {
-                'key': null
-                'background.scripts': 'scripts/test-script.js'
-            },
+            buildnumber: true,
+            exclude: [
+	            'key',
+	            {
+	            	'background.scripts': [
+	            		'scripts/test-script1.js',
+	            		'scripts/willbe-remove-only-for-debug.js'
+	            	]
+	            }
+            ],
             overwrite: {
-                'name': 'Here is new name for App'
+               'name': 'Here is new name for App'
             }
         }))
         .pile($.if('*.js', $.uglify({preserveComments: 'some'})))
@@ -42,10 +47,9 @@ gulp.task('manifest', function() {
 
 Auto-increment version in manifest. Can be:
 
-- `dest`: increase build number in dest only
-- `both`: increase build number in both origin and dest
-- `String`: version in [this format](http://developer.chrome.com/apps/manifest/version)
-- `undefined` or `false`: do not increase build number
+- `true`: Increase build number
+- `false` or `undefined`: Do not increase build number
+- `String`: Update version as passed value. version should be in [this format](http://developer.chrome.com/apps/manifest/version)
 
 ### exclude 
 

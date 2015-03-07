@@ -21,10 +21,11 @@
     "chrome manifest"
   ],
   "dependencies": {
+    "chrome-manifest": "0.0.7",
+    "gulp-util": "^3.0.4",
     "through2": "^0.6.3"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "mocha"
   }
