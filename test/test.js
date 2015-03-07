@@ -1,11 +1,23 @@
 /*global describe, it */
 'use strict';
+
 var assert = require('assert');
-var gulpChromeManifest = require('../');
+var manifest = require('../');
+var fs = require('fs');
+var gutil = require('gulp-util');
 
 describe('gulp-chrome-manifest node module', function () {
-  it('must have at least one test', function () {
-    gulpChromeManifest();
-    assert(false, 'I was too lazy to write any tests. Shame on me.');
+  it('should ', function () {
+    var stream = manifest();
+
+    stream.on('data', function(file) {
+    	console.log(file);
+    })
+
+    stream.write(new gutil.File({
+    	path: 'fixtures/manifest.json',
+    	contents: new Buffer(fs.readFileSync('test/fixtures/manifest.json'))
+    }));
+    assert(true);
   });
 });
