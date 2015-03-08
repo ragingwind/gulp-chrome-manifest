@@ -1,11 +1,10 @@
 #  [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-url]][daviddm-image]
 
-> Gulp plugin for Chrome Manifest
+> gulp plug-in manages properties in manifest for Chrome Apps or Extensions.
 
 ## Getting Started
 
-The gulp plugin manages name/value in manifest of Chrome Apps or Extensions. You can get a new manifest that has newer version for app or properties has been removed or modified for production version.
-
+The plug-in generates stream of files according to file list in manifest. Follow up, You can get a new manifest that has newer properties has been removed or modified for production version. 
 
 ## Install
 
@@ -13,31 +12,32 @@ The gulp plugin manages name/value in manifest of Chrome Apps or Extensions. You
 $ npm install --save gulp-chrome-manifest
 ```
 
-
 ## Usage
 
 ```js
 var manifest = require('gulp-chrome-manifest');
-gulp.task('manifest', function() {
-    return gulp.src(['app/manifest.json'])
-        .pipe(manifest({
-            buildnumber: true,
-            exclude: [
-	            'key',
-	            {
-	            	'background.scripts': [
-	            		'scripts/test-script1.js',
-	            		'scripts/willbe-remove-only-for-debug.js'
-	            	]
-	            }
-            ],
-            overwrite: {
-               'name': 'Here is new name for App'
-            }
-        }))
-        .pile($.if('*.js', $.uglify({preserveComments: 'some'})))
-        .pile($.if('*.css', $.cssmin()))
-        .pipe(gulp.dest('dist'))
+gulp.task('default', function() {
+	return gulp.src('fixtures/manifest.json')
+		.pipe(manifest({
+			buildnumber: true,
+	    exclude: [
+	      'key'
+	    ],
+	    background: {
+    		target: 'scripts/background.js',
+    		exclude: [
+    			'scripts/not-exist-test-script1.js',
+      		'scripts/willbe-remove-only-for-debug.js',
+      		'components/jquery/jquery.min.js',
+    		]
+    	},
+		}))
+		.pipe(logger())
+		.pipe(gulpif('*.css', cssmin()))
+  	.pipe(gulpif('*.js', sourcemaps.init()))
+  	.pipe(gulpif('*.js', uglify()))
+  	.pipe(gulpif('*.js', sourcemaps.write()))
+		.pipe(gulp.dest('.tmp'));
 });
 ```
 
@@ -53,16 +53,18 @@ Auto-increment version in manifest. Can be:
 
 ### exclude 
 
-Exclude fields from source manifest.json. Using `exclude`, If there is fields you don't want to publish.
+Exclude fields from source manifest.json. Using `exclude`, If there is fields what you want to prevent to publish.
 
-### overwrite
+### background
 
-Overwrite other value to specific field. For example, You can change the key value to the production key value.
+Concatenate scripts in `background.scripts` or `app.background` of manifest for uglify / minify / sourcemap
+
+- target: `String`, Set new background script path for concatenated
+- exclude: `Array`, exclude script in `background.scripts` or `app.background` of manifest
 
 ## License
 
-MIT © [ragingwind](http://ragingwind.me)
-
+MIT © [Jimmy Moon](http://ragingwind.me)
 
 [npm-url]: https://npmjs.org/package/gulp-chrome-manifest
 [npm-image]: https://badge.fury.io/js/gulp-chrome-manifest.svg
