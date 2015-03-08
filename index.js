@@ -49,7 +49,7 @@ module.exports = function (options) {
   	enter();
 
 		// make concatenated stream
-		var prop = manifest.prop('app') ? 'app.background' : 'background.scripts';
+		var prop = manifest.prop('app') ? 'app.background.scripts' : 'background.scripts';
 		var backgrounds = manifest.prop(prop);
 
   	if (opts.background) {
