@@ -86,23 +86,28 @@ module.exports = function (options) {
 
   	// streaming content resources
   	var contentFiles = [];
-		manifest.val('content_scripts').forEach(function(r) {
-			if (r.js && r.js.length > 0) {
-				contentFiles = contentFiles.concat(r.js);
-			}
+  	var contentScripts = manifest.val('content_scripts');
 
-			if (r.css && r.css.length > 0) {
-				contentFiles = contentFiles.concat(r.css);
-			}
-		});
+  	if (contentScripts && contentScripts.length > 0) {
+			contentScripts.forEach(function(r) {
+				if (r.js && r.js.length > 0) {
+					contentFiles = contentFiles.concat(r.js);
+				}
 
-		// stream out files
-		contentFiles.forEach(function(src) {
-			this.push(new gutil.File({
-				path: path.resolve(src),
-				contents: fs.readFileSync(path.resolve(src))
-			}));
-		}.bind(this));
+				if (r.css && r.css.length > 0) {
+					contentFiles = contentFiles.concat(r.css);
+				}
+			});
+
+			// stream out files
+			contentFiles.forEach(function(src) {
+				this.push(new gutil.File({
+					path: path.resolve(src),
+					contents: fs.readFileSync(path.resolve(src))
+				}));
+			}.bind(this));
+		}
+
 
 		// add manifest.json
 		this.push(new File({
