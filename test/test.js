@@ -7,10 +7,13 @@ var gutil = require('gulp-util');
 var Manifest = require('../');
 
 describe('gulp-chrome-manifest node module', function () {
-	var srcString = fs.readFileSync('test/fixtures/manifest.json');
+
+	process.chdir('test/fixtures/');
+
+	var srcString = fs.readFileSync('manifest.json');
 	var srcJSON = JSON.parse(srcString);
 	var srcFile = new gutil.File({
-		path: 'fixtures/manifest.json',
+		path: 'manifest.json',
 		contents: new Buffer(srcString)
   });
 
@@ -20,7 +23,9 @@ describe('gulp-chrome-manifest node module', function () {
     });
 
     stream.on('data', function(file) {
-    	assert(JSON.parse(file.contents).version === '0.0.2');
+    	if (file.path.indexOf('manifest.json') >= 0) {
+    		assert(JSON.parse(file.contents).version === '0.0.2');
+    	}
     })
     stream.on('end', cb);
     stream.write(srcFile);
@@ -33,7 +38,9 @@ describe('gulp-chrome-manifest node module', function () {
     });
 
     stream.on('data', function(file) {
-    	assert(JSON.parse(file.contents).version === '1.0.0');
+    	if (file.path.indexOf('manifest.json') >= 0) {
+    		assert(JSON.parse(file.contents).version === '1.0.0');
+    	}
     })
     stream.on('end', cb);
     stream.write(srcFile);
@@ -52,36 +59,27 @@ describe('gulp-chrome-manifest node module', function () {
         }
       ]
     });
+    var files = [];
 
     stream.on('data', function(file) {
-    	var manifest = JSON.parse(file.contents);
-    	assert(!manifest.key);
-    	assert(manifest.background.scripts.indexOf('components/jquery/jquery.min.js') === -1);
-    	assert(manifest.background.scripts.indexOf('scripts/willbe-remove-only-for-debug.js') === -1);
-    })
-    stream.on('end', cb);
-    stream.write(srcFile);
-    stream.end();
-  });
+    	files.push(file.path);
 
-  it('should returns updated pros', function (cb) {
-    var stream = new Manifest({
-    	overwrite: {
-        'key': 'new-key',
-      	'background.scripts': [
-        	'uglify-concat-background.js'
-        ]
-       }
+    	if (file.path.indexOf('manifest.json') >= 0) {
+	    	var manifest = JSON.parse(file.contents);
+	    	assert(!manifest.key);
+	    	assert(manifest.background.scripts.indexOf('components/jquery/jquery.min.js') === -1);
+	    	assert(manifest.background.scripts.indexOf('scripts/willbe-remove-only-for-debug.js') === -1);
+	    }
+    })
+
+    stream.on('end', function() {
+    	assert(files.indexOf('scripts/willbe-remove-only-for-debug.js') === -1);
+    	assert(files.indexOf('components/jquery/jquery.min.js') === -1);
+    	assert(files.indexOf('scripts/user-script.js') === -1);
+    	assert(files.indexOf('scripts/background.js') === -1);
+    	cb();
     });
 
-    stream.on('data', function(file) {
-    	var manifest = JSON.parse(file.contents);
-    	assert.equal(manifest.key, 'new-key');
-    	assert.equal(manifest.background.scripts[0], 'uglify-concat-background.js');
-    	assert.equal(manifest.background.scripts.length, 1);
-    	
-    })
-    stream.on('end', cb);
     stream.write(srcFile);
     stream.end();
   });
