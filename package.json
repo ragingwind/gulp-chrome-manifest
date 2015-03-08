@@ -21,7 +21,7 @@
     "chrome manifest"
   ],
   "dependencies": {
-    "chrome-manifest": "0.0.9",
+    "chrome-manifest": "0.0.5",
     "gulp-util": "^3.0.4",
     "through2": "^0.6.3"
   },

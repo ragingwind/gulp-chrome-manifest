@@ -64,10 +64,14 @@ module.exports = function (options) {
 			var contents = [];
 
 			backgrounds.map(function(src) {
-				if (opts.background.exclude && opts.background.exclude.indexOf(src) === -1) {
-					contents.push(fs.readFileSync(src));
-				}
-			});
+        if (opts.background.exclude) {
+          if (opts.background.exclude.indexOf(src) === -1) {
+            contents.push(fs.readFileSync(src));
+          }
+        } else {
+          contents.push(fs.readFileSync(src));
+        }
+      });
 
 			this.push(new File({
 				path: path.resolve(opts.background.target),
