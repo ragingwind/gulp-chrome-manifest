@@ -1,6 +1,6 @@
 {
   "name": "gulp-chrome-manifest",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "The gulp plug-in manages name/value in manifest of Chrome Apps or Extensions.",
   "homepage": "https://github.com/ragingwind/gulp-chrome-manifest",
   "author": {
