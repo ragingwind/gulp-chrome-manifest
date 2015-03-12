@@ -78,7 +78,7 @@ module.exports = function (options) {
 				contents: Buffer.concat(contents)
 			}));
 
-			manifest.set(prop, opts.background.target);
+			manifest.set(prop, [opts.background.target]);
   	} else if (backgrounds) {
   		backgrounds.forEach(function(src) {
   			this.push(new File({
