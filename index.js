@@ -48,9 +48,8 @@ module.exports = function (options) {
 
   	enter();
 
-		// make concatenated stream
-		var prop = manifest.prop('app') ? 'app.background.scripts' : 'background.scripts';
-		var backgrounds = manifest.prop(prop);
+		var backgrounds = manifest.app ? manifest.app.background.scripts :
+																		 manifest.background.scripts;
 
   	if (opts.background) {
   		if (!backgrounds) {
@@ -78,7 +77,7 @@ module.exports = function (options) {
 				contents: Buffer.concat(contents)
 			}));
 
-			manifest.set(prop, [opts.background.target]);
+			backgrounds = opts.background.target;
   	} else if (backgrounds) {
   		backgrounds.forEach(function(src) {
   			this.push(new File({
@@ -90,10 +89,9 @@ module.exports = function (options) {
 
   	// streaming content resources
   	var contentFiles = [];
-  	var contentScripts = manifest.val('content_scripts');
 
-  	if (contentScripts && contentScripts.length > 0) {
-			contentScripts.forEach(function(r) {
+  	if (manifest.content_scripts && manifest.content_scripts.length > 0) {
+			manifest.content_scripts.forEach(function(r) {
 				if (r.js && r.js.length > 0) {
 					contentFiles = contentFiles.concat(r.js);
 				}

@@ -66,7 +66,6 @@ describe('gulp-chrome-manifest node module', function () {
 
     	if (file.path.indexOf('manifest.json') >= 0) {
 	    	var manifest = JSON.parse(file.contents);
-	    	console.log(obj);
 	    	assert(!manifest.key);
 	    	assert(manifest.background.scripts.indexOf('components/jquery/jquery.min.js') === -1);
 	    	assert(manifest.background.scripts.indexOf('scripts/willbe-remove-only-for-debug.js') === -1);
