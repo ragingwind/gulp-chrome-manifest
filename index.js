@@ -10,19 +10,19 @@ var Manifest = require('chrome-manifest');
 module.exports = function (options) {
 	var opts = options || {};
 
-  return through.obj(function(file, enc, cb) {
-  	if (file.isNull()) {
-  		cb(null, file);
-  		return;
-  	}
+	return through.obj(function(file, enc, cb) {
+		if (file.isNull()) {
+			cb(null, file);
+			return;
+		}
 
-  	if (file.isStream()) {
-  		cb(new gutil.PluginError('gulp-chrome-manifest', 'Streaming not supported'));
-  		return;
-  	}
+		if (file.isStream()) {
+			cb(new gutil.PluginError('gulp-chrome-manifest', 'Streaming not supported'));
+			return;
+		}
 
-  	var manifest = new Manifest().load(JSON.parse(file.contents));
-  	var appBasePath = path.dirname(file.path);
+		var manifest = new Manifest().load(JSON.parse(file.contents));
+		var appBasePath = path.dirname(file.path);
 		var cwd = '';
 
 		function enter() {
@@ -34,27 +34,27 @@ module.exports = function (options) {
 			process.chdir(cwd);
 		}
 
-  	// patch version number
-  	if (typeof opts.buildnumber === 'boolean') {
-  		manifest.patch();
-  	} else if (typeof opts.buildnumber === 'string') {
-  		manifest.patch(opts.buildnumber);
-  	}
+		// patch version number
+		if (typeof opts.buildnumber === 'boolean') {
+			manifest.patch();
+		} else if (typeof opts.buildnumber === 'string') {
+			manifest.patch(opts.buildnumber);
+		}
 
-  	// exclude
-  	if (opts.exclude) {
-  		manifest.exclude(opts.exclude);
-  	}
+		// exclude
+		if (opts.exclude) {
+			manifest.exclude(opts.exclude);
+		}
 
-  	enter();
+		enter();
 
 		var backgrounds = manifest.app ? manifest.app.background.scripts :
-																		 manifest.background.scripts;
+		manifest.background.scripts;
 
-  	if (opts.background) {
-  		if (!backgrounds) {
-  			throw new Error('Manifest has no background property');
-  		}
+		if (opts.background) {
+			if (!backgrounds) {
+				throw new Error('Manifest has no background property');
+			}
 
 			if (!Array.isArray(backgrounds)) {
 				backgrounds = new Array(backgrounds);
@@ -63,14 +63,14 @@ module.exports = function (options) {
 			var contents = [];
 
 			backgrounds.map(function(src) {
-        if (opts.background.exclude) {
-          if (opts.background.exclude.indexOf(src) === -1) {
-            contents.push(fs.readFileSync(src));
-          }
-        } else {
-          contents.push(fs.readFileSync(src));
-        }
-      });
+				if (opts.background.exclude) {
+					if (opts.background.exclude.indexOf(src) === -1) {
+						contents.push(fs.readFileSync(src));
+					}
+				} else {
+					contents.push(fs.readFileSync(src));
+				}
+			});
 
 			this.push(new File({
 				path: path.resolve(opts.background.target),
@@ -82,19 +82,19 @@ module.exports = function (options) {
 			} else {
 				manifest.background.scripts = [opts.background.target];
 			}
-  	} else if (backgrounds) {
-  		backgrounds.forEach(function(src) {
-  			this.push(new File({
+		} else if (backgrounds) {
+			backgrounds.forEach(function(src) {
+				this.push(new File({
 					path: path.resolve(src),
 					contents: fs.readFileSync(path.resolve(src))
 				}));
 			}.bind(this));
-  	}
+		}
 
-  	// streaming content resources
-  	var contentFiles = [];
+		// streaming content resources
+		var contentFiles = [];
 
-  	if (manifest.content_scripts && manifest.content_scripts.length > 0) {
+		if (manifest.content_scripts && manifest.content_scripts.length > 0) {
 			manifest.content_scripts.forEach(function(r) {
 				if (r.js && r.js.length > 0) {
 					contentFiles = contentFiles.concat(r.js);
@@ -123,6 +123,6 @@ module.exports = function (options) {
 
 		pop();
 
-  	cb();
-  });
+		cb();
+	});
 };
