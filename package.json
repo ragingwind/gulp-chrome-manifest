@@ -21,17 +21,17 @@
     "chrome manifest"
   ],
   "dependencies": {
-    "chrome-manifest": "^0.2.1",
-    "gulp-util": "^3.0.4",
-    "through2": "^0.6.5"
+    "chrome-manifest": "^0.2.4",
+    "gulp-util": "^3.0.6",
+    "through2": "^2.0.0"
   },
   "devDependencies": {
-    "del": "^1.1.1",
-    "gulp": "^3.8.11",
+    "del": "^1.2.0",
+    "gulp": "^3.9.0",
     "gulp-cssmin": "^0.1.7",
     "gulp-if": "^1.2.5",
     "gulp-uglify": "^1.2.0",
-    "gulp-concat": "^2.5.2",
+    "gulp-concat": "^2.6.0",
     "gulp-sourcemaps": "^1.5.2"
   },
   "scripts": {
