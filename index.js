@@ -35,7 +35,7 @@ module.exports = function (options) {
 		}
 
 		// patch version number
-		if (typeof opts.buildnumber === 'boolean') {
+		if (typeof opts.buildnumber === 'boolean' && opts.buildnumber) {
 			manifest.patch();
 		} else if (typeof opts.buildnumber === 'string') {
 			manifest.patch(opts.buildnumber);
