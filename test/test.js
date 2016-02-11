@@ -15,7 +15,7 @@ describe('gulp-chrome-manifest node module', function () {
 	var srcFile = new gutil.File({
 		path: 'manifest.json',
 		contents: new Buffer(srcString)
-  });
+    });
 
   it('should returns updated version', function (cb) {
     var stream = new Manifest({
@@ -78,6 +78,35 @@ describe('gulp-chrome-manifest node module', function () {
     	assert(files.indexOf('scripts/user-script.js') === -1);
     	assert(files.indexOf('scripts/background.js') === -1);
     	cb();
+    });
+
+    stream.write(srcFile);
+    stream.end();
+  });
+
+  it('should returns excluded background', function(cb) {
+    var stream = new Manifest({
+        exclude: [
+            'background'
+        ]
+    });
+    var files = [];
+
+    stream.on('data', function(file) {
+        files.push(file.path);
+
+        if (file.path.indexOf('manifest.json') >= 0) {
+            var manifest = JSON.parse(file.contents);
+            assert(!manifest.background);
+        }
+    })
+
+    stream.on('end', function() {
+        assert(files.indexOf('scripts/willbe-remove-only-for-debug.js') === -1);
+        assert(files.indexOf('components/jquery/jquery.min.js') === -1);
+        assert(files.indexOf('scripts/user-script.js') === -1);
+        assert(files.indexOf('scripts/background.js') === -1);
+        cb();
     });
 
     stream.write(srcFile);
