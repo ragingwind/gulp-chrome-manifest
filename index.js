@@ -48,49 +48,49 @@ module.exports = function (options) {
 
 		enter();
 
-		if (!(opts.exclude && opts.exclude.indexOf('background') !== -1)) {
-			var backgrounds = manifest.app ? manifest.app.background.scripts :
-			manifest.background.scripts;
+		var backgrounds = manifest.app ? manifest.app.background : manifest.background;
+		if (backgrounds) {
+		  backgrounds = backgrounds.scripts;
+		}
 
-			if (opts.background) {
-				if (!backgrounds) {
-					throw new Error('Manifest has no background property');
-				}
+		if (opts.background) {
+			if (!backgrounds) {
+				throw new Error('Manifest has no background property');
+			}
 
-				if (!Array.isArray(backgrounds)) {
-					backgrounds = new Array(backgrounds);
-				}
+			if (!Array.isArray(backgrounds)) {
+				backgrounds = new Array(backgrounds);
+			}
 
-				var contents = [];
+			var contents = [];
 
-				backgrounds.map(function(src) {
-					if (opts.background.exclude) {
-						if (opts.background.exclude.indexOf(src) === -1) {
-							contents.push(fs.readFileSync(src));
-						}
-					} else {
+			backgrounds.map(function(src) {
+				if (opts.background.exclude) {
+					if (opts.background.exclude.indexOf(src) === -1) {
 						contents.push(fs.readFileSync(src));
 					}
-				});
-
-				this.push(new File({
-					path: path.resolve(opts.background.target),
-					contents: Buffer.concat(contents)
-				}));
-
-				if (manifest.app) {
-					manifest.app.background.scripts = [opts.background.target];
 				} else {
-					manifest.background.scripts = [opts.background.target];
+					contents.push(fs.readFileSync(src));
 				}
-			} else if (backgrounds) {
-				backgrounds.forEach(function(src) {
-					this.push(new File({
-						path: path.resolve(src),
-						contents: fs.readFileSync(path.resolve(src))
-					}));
-				}.bind(this));
+			});
+
+			this.push(new File({
+				path: path.resolve(opts.background.target),
+				contents: Buffer.concat(contents)
+			}));
+
+			if (manifest.app) {
+				manifest.app.background.scripts = [opts.background.target];
+			} else {
+				manifest.background.scripts = [opts.background.target];
 			}
+		} else if (backgrounds) {
+			backgrounds.forEach(function(src) {
+				this.push(new File({
+					path: path.resolve(src),
+					contents: fs.readFileSync(path.resolve(src))
+				}));
+			}.bind(this));
 		}
 
 		// streaming content resources
