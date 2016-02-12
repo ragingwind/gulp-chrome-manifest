@@ -8,24 +8,24 @@ var Manifest = require('../');
 
 describe('gulp-chrome-manifest node module', function () {
 
-	process.chdir('test/fixtures/');
+  process.chdir('test/fixtures/');
 
-	var srcString = fs.readFileSync('manifest.json');
-	var srcJSON = JSON.parse(srcString);
-	var srcFile = new gutil.File({
-		path: 'manifest.json',
-		contents: new Buffer(srcString)
+  var srcString = fs.readFileSync('manifest.json');
+  var srcJSON = JSON.parse(srcString);
+  var srcFile = new gutil.File({
+    path: 'manifest.json',
+    contents: new Buffer(srcString)
   });
 
   it('should returns updated version', function (cb) {
     var stream = new Manifest({
-    	buildnumber: true
+        buildnumber: true
     });
 
     stream.on('data', function(file) {
-    	if (file.path.indexOf('manifest.json') >= 0) {
-    		assert(JSON.parse(file.contents).version === '0.0.2');
-    	}
+        if (file.path.indexOf('manifest.json') >= 0) {
+            assert(JSON.parse(file.contents).version === '0.0.2');
+        }
     })
     stream.on('end', cb);
     stream.write(srcFile);
@@ -34,13 +34,13 @@ describe('gulp-chrome-manifest node module', function () {
 
   it('should returns updated version', function (cb) {
     var stream = new Manifest({
-    	buildnumber: '1.0.0'
+        buildnumber: '1.0.0'
     });
 
     stream.on('data', function(file) {
-    	if (file.path.indexOf('manifest.json') >= 0) {
-    		assert(JSON.parse(file.contents).version === '1.0.0');
-    	}
+        if (file.path.indexOf('manifest.json') >= 0) {
+            assert(JSON.parse(file.contents).version === '1.0.0');
+        }
     })
     stream.on('end', cb);
     stream.write(srcFile);
@@ -49,35 +49,64 @@ describe('gulp-chrome-manifest node module', function () {
 
   it('should returns excluded props', function (cb) {
     var stream = new Manifest({
-    	exclude: [
+        exclude: [
         'key',
         {
-        	'background.scripts': [
-        		'components/jquery/jquery.min.js',
-        		'scripts/willbe-remove-only-for-debug.js'
-        	]
+            'background.scripts': [
+                'components/jquery/jquery.min.js',
+                'scripts/willbe-remove-only-for-debug.js'
+            ]
         }
       ]
     });
     var files = [];
 
     stream.on('data', function(file) {
-    	files.push(file.path);
+        files.push(file.path);
 
-    	if (file.path.indexOf('manifest.json') >= 0) {
-	    	var manifest = JSON.parse(file.contents);
-	    	assert(!manifest.key);
-	    	assert(manifest.background.scripts.indexOf('components/jquery/jquery.min.js') === -1);
-	    	assert(manifest.background.scripts.indexOf('scripts/willbe-remove-only-for-debug.js') === -1);
-	    }
+        if (file.path.indexOf('manifest.json') >= 0) {
+            var manifest = JSON.parse(file.contents);
+            assert(!manifest.key);
+            assert(manifest.background.scripts.indexOf('components/jquery/jquery.min.js') === -1);
+            assert(manifest.background.scripts.indexOf('scripts/willbe-remove-only-for-debug.js') === -1);
+        }
     })
 
     stream.on('end', function() {
-    	assert(files.indexOf('scripts/willbe-remove-only-for-debug.js') === -1);
-    	assert(files.indexOf('components/jquery/jquery.min.js') === -1);
-    	assert(files.indexOf('scripts/user-script.js') === -1);
-    	assert(files.indexOf('scripts/background.js') === -1);
-    	cb();
+        assert(files.indexOf('scripts/willbe-remove-only-for-debug.js') === -1);
+        assert(files.indexOf('components/jquery/jquery.min.js') === -1);
+        assert(files.indexOf('scripts/user-script.js') === -1);
+        assert(files.indexOf('scripts/background.js') === -1);
+        cb();
+    });
+
+    stream.write(srcFile);
+    stream.end();
+  });
+
+  it('should returns excluded background', function(cb) {
+    var stream = new Manifest({
+        exclude: [
+            'background'
+        ]
+    });
+    var files = [];
+
+    stream.on('data', function(file) {
+        files.push(file.path);
+
+        if (file.path.indexOf('manifest.json') >= 0) {
+            var manifest = JSON.parse(file.contents);
+            assert(!manifest.background);
+        }
+    })
+
+    stream.on('end', function() {
+        assert(files.indexOf('scripts/willbe-remove-only-for-debug.js') === -1);
+        assert(files.indexOf('components/jquery/jquery.min.js') === -1);
+        assert(files.indexOf('scripts/user-script.js') === -1);
+        assert(files.indexOf('scripts/background.js') === -1);
+        cb();
     });
 
     stream.write(srcFile);

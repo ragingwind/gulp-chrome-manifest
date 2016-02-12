@@ -34,8 +34,8 @@ gulp.task('default', ['clean'], function() {
     		target: 'scripts/background.js',
     		exclude: [
     			'scripts/not-exist-test-script1.js',
-      		'scripts/willbe-remove-only-for-debug.js',
-      		'components/jquery/jquery.min.js',
+    			'scripts/willbe-remove-only-for-debug.js',
+    			'components/jquery/jquery.min.js',
     		]
     	},
 		}))

@@ -48,8 +48,10 @@ module.exports = function (options) {
 
 		enter();
 
-		var backgrounds = manifest.app ? manifest.app.background.scripts :
-		manifest.background.scripts;
+		var backgrounds = manifest.app ? manifest.app.background : manifest.background;
+		if (backgrounds) {
+		  backgrounds = backgrounds.scripts;
+		}
 
 		if (opts.background) {
 			if (!backgrounds) {
