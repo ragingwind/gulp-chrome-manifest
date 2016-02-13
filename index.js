@@ -50,7 +50,7 @@ module.exports = function (options) {
 
 		var backgrounds = manifest.app ? manifest.app.background : manifest.background;
 		if (backgrounds) {
-		  backgrounds = backgrounds.scripts;
+			backgrounds = backgrounds.scripts;
 		}
 
 		if (opts.background) {

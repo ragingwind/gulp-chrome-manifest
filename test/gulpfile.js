@@ -16,7 +16,7 @@ function logger() {
 		console.log('log:', file.path);
 		this.push(file)
 		cb();
-  });
+	});
 };
 
 gulp.task('clean', function() {
@@ -27,22 +27,22 @@ gulp.task('default', ['clean'], function() {
 	return gulp.src('fixtures/manifest.json')
 		.pipe(manifest({
 			buildnumber: true,
-	    exclude: [
-	      'key'
-	    ],
-	    background: {
-    		target: 'scripts/background.js',
-    		exclude: [
-    			'scripts/not-exist-test-script1.js',
-    			'scripts/willbe-remove-only-for-debug.js',
-    			'components/jquery/jquery.min.js',
-    		]
-    	},
+			exclude: [
+				'key'
+			],
+			background: {
+				target: 'scripts/background.js',
+				exclude: [
+					'scripts/not-exist-test-script1.js',
+					'scripts/willbe-remove-only-for-debug.js',
+					'components/jquery/jquery.min.js',
+				]
+			},
 		}))
 		.pipe(logger())
 		.pipe(gulpif('*.css', cssmin()))
-  	.pipe(gulpif('*.js', sourcemaps.init()))
-  	.pipe(gulpif('*.js', uglify()))
-  	.pipe(gulpif('*.js', sourcemaps.write()))
+		.pipe(gulpif('*.js', sourcemaps.init()))
+		.pipe(gulpif('*.js', uglify()))
+		.pipe(gulpif('*.js', sourcemaps.write()))
 		.pipe(gulp.dest('.tmp'));
 });
