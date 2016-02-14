@@ -10,7 +10,7 @@ var Manifest = require('chrome-manifest');
 module.exports = function (options) {
 	var opts = options || {};
 
-	return through.obj(function(file, enc, cb) {
+	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
 			return;
@@ -64,7 +64,7 @@ module.exports = function (options) {
 
 			var contents = [];
 
-			backgrounds.map(function(src) {
+			backgrounds.map(function (src) {
 				if (opts.background.exclude) {
 					if (opts.background.exclude.indexOf(src) === -1) {
 						contents.push(fs.readFileSync(src));
@@ -85,7 +85,7 @@ module.exports = function (options) {
 				manifest.background.scripts = [opts.background.target];
 			}
 		} else if (backgrounds) {
-			backgrounds.forEach(function(src) {
+			backgrounds.forEach(function (src) {
 				this.push(new File({
 					path: path.resolve(src),
 					contents: fs.readFileSync(path.resolve(src))
@@ -97,7 +97,7 @@ module.exports = function (options) {
 		var contentFiles = [];
 
 		if (manifest.content_scripts && manifest.content_scripts.length > 0) {
-			manifest.content_scripts.forEach(function(r) {
+			manifest.content_scripts.forEach(function (r) {
 				if (r.js && r.js.length > 0) {
 					contentFiles = contentFiles.concat(r.js);
 				}
@@ -108,14 +108,13 @@ module.exports = function (options) {
 			});
 
 			// stream out files
-			contentFiles.forEach(function(src) {
+			contentFiles.forEach(function (src) {
 				this.push(new gutil.File({
 					path: path.resolve(src),
 					contents: fs.readFileSync(path.resolve(src))
 				}));
 			}.bind(this));
 		}
-
 
 		// add manifest.json
 		this.push(new File({

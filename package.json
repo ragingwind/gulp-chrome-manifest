@@ -8,6 +8,9 @@
     "email": "ragingwind@gmail.com",
     "url": "http://ragingwind.me"
   },
+  "engines": {
+    "node": ">=0.10.0"
+  },
   "repository": "ragingwind/gulp-chrome-manifest",
   "license": "MIT",
   "files": [
@@ -26,15 +29,16 @@
     "through2": "^2.0.0"
   },
   "devDependencies": {
-    "del": "^1.2.0",
-    "gulp": "^3.9.0",
-    "gulp-cssmin": "^0.1.7",
-    "gulp-if": "^1.2.5",
-    "gulp-uglify": "^1.2.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-sourcemaps": "^1.5.2"
+    "ava": "^0.11.0",
+    "xo": "^0.12.1"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "xo && ava"
+  },
+  "xo": {
+    "envs": [
+      "node",
+      "mocha"
+    ]
   }
 }
