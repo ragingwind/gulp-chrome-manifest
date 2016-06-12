@@ -93,9 +93,14 @@ module.exports = function (options) {
 			}.bind(this));
 		}
 
-		// streaming content resources
 		var contentFiles = [];
-
+		
+		// collect packaged resources
+		if (manifest.web_accessible_resources) {
+			contentFiles = contentFiles.concat(manifest.web_accessible_resources);
+		}
+    
+    // collect content scripts
 		if (manifest.content_scripts && manifest.content_scripts.length > 0) {
 			manifest.content_scripts.forEach(function (r) {
 				if (r.js && r.js.length > 0) {
@@ -106,15 +111,15 @@ module.exports = function (options) {
 					contentFiles = contentFiles.concat(r.css);
 				}
 			});
-
-			// stream out files
-			contentFiles.forEach(function (src) {
-				this.push(new gutil.File({
-					path: path.resolve(src),
-					contents: fs.readFileSync(path.resolve(src))
-				}));
-			}.bind(this));
 		}
+		
+		// stream out files
+		contentFiles.forEach(function (src) {
+			this.push(new gutil.File({
+				path: path.resolve(src),
+				contents: fs.readFileSync(path.resolve(src))
+			}));
+		}.bind(this));
 
 		// add manifest.json
 		this.push(new File({
