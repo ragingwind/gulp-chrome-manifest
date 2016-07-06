@@ -113,3 +113,21 @@ test.cb('should returns excluded background', t => {
 	stream.write(srcFile);
 	stream.end();
 });
+
+test.cb('should return icon files', t => {
+	var stream = new Manifest();
+
+	var files = [];
+
+	stream.on('data', function (file) {
+		files.push(file.path);
+	});
+
+	stream.on('end', function () {
+		t.ok(files.indexOf(path.resolve('icons/icon128.png')) !== -1);
+		t.end();
+	});
+
+	stream.write(srcFile);
+	stream.end();
+});

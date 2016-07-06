@@ -116,6 +116,23 @@ module.exports = function (options) {
 			}.bind(this));
 		}
 
+		// icons
+		var iconFiles = [];
+
+		if (manifest.icons && Object.keys(manifest.icons).length > 0) {
+			Object.keys(manifest.icons).forEach(function (r) {
+				iconFiles.push(manifest.icons[r]);
+			});
+
+			// stream out files
+			iconFiles.forEach(function (src) {
+				this.push(new gutil.File({
+					path: path.resolve(src),
+					contents: fs.readFileSync(path.resolve(src))
+				}));
+			}.bind(this));
+		}
+
 		// add manifest.json
 		this.push(new File({
 			path: file.path,
