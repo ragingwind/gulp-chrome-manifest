@@ -40,5 +40,8 @@
       ]
     }
   ],
-  "key": "test-key"
+  "key": "test-key",
+  "icons": {
+    "128": "icons/icon128.png"
+  }
 }
