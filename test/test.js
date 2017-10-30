@@ -113,3 +113,27 @@ test.cb('should returns excluded background', t => {
 	stream.write(srcFile);
 	stream.end();
 });
+
+test.cb('should returns web accessible resources', t => {
+	var stream = new Manifest();
+	var files = [];
+
+	stream.on('data', function (file) {
+		var filePath = path.relative(path.join(__dirname, 'fixtures'), file.path);
+		files.push(filePath);
+
+		if (filePath.indexOf('manifest.json') !== -1) {
+			var manifest = JSON.parse(file.contents);
+			t.ok(manifest.web_accessible_resources);
+		}
+	});
+
+	stream.on('end', function () {
+		t.ok(files.indexOf('scripts/contentscript-100.js') !== -1);
+		t.ok(files.indexOf('styles/contentstyle-100.css') !== -1);
+		t.end();
+	});
+
+	stream.write(srcFile);
+	stream.end();
+});
