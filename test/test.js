@@ -52,8 +52,10 @@ test.cb('should returns excluded props', t => {
 			'key',
 			{
 				'background.scripts': [
+					'scripts/user-script.js',
 					'components/jquery/jquery.min.js',
-					'scripts/willbe-remove-only-for-debug.js'
+					'scripts/willbe-remove-only-for-debug.js',
+					'scripts/background.js'
 				]
 			}
 		]
@@ -62,9 +64,10 @@ test.cb('should returns excluded props', t => {
 	var files = [];
 
 	stream.on('data', function (file) {
-		files.push(file.path);
+		var filePath = path.relative(path.join(__dirname, 'fixtures'), file.path);
+		files.push(filePath);
 
-		if (file.path.indexOf('manifest.json') >= 0) {
+		if (filePath.indexOf('manifest.json') >= 0) {
 			var manifest = JSON.parse(file.contents);
 			t.ok(!manifest.key);
 			t.ok(manifest.background.scripts.indexOf('components/jquery/jquery.min.js') === -1);
@@ -94,9 +97,10 @@ test.cb('should returns excluded background', t => {
 	var files = [];
 
 	stream.on('data', function (file) {
-		files.push(file.path);
+		var filePath = path.relative(path.join(__dirname, 'fixtures'), file.path);
+		files.push(filePath);
 
-		if (file.path.indexOf('manifest.json') >= 0) {
+		if (filePath.indexOf('manifest.json') >= 0) {
 			var manifest = JSON.parse(file.contents);
 			t.ok(!manifest.background);
 		}
