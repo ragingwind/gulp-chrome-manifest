@@ -40,5 +40,9 @@
       ]
     }
   ],
+  "web_accessible_resources": [
+    "scripts/contentscript-100.js",
+    "styles/contentstyle-100.css"
+  ],
   "key": "test-key"
 }

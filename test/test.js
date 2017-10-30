@@ -52,8 +52,10 @@ test.cb('should returns excluded props', t => {
 			'key',
 			{
 				'background.scripts': [
+					'scripts/user-script.js',
 					'components/jquery/jquery.min.js',
-					'scripts/willbe-remove-only-for-debug.js'
+					'scripts/willbe-remove-only-for-debug.js',
+					'scripts/background.js'
 				]
 			}
 		]
@@ -62,9 +64,10 @@ test.cb('should returns excluded props', t => {
 	var files = [];
 
 	stream.on('data', function (file) {
-		files.push(file.path);
+		var filePath = path.relative(path.join(__dirname, 'fixtures'), file.path);
+		files.push(filePath);
 
-		if (file.path.indexOf('manifest.json') >= 0) {
+		if (filePath.indexOf('manifest.json') >= 0) {
 			var manifest = JSON.parse(file.contents);
 			t.ok(!manifest.key);
 			t.ok(manifest.background.scripts.indexOf('components/jquery/jquery.min.js') === -1);
@@ -94,9 +97,10 @@ test.cb('should returns excluded background', t => {
 	var files = [];
 
 	stream.on('data', function (file) {
-		files.push(file.path);
+		var filePath = path.relative(path.join(__dirname, 'fixtures'), file.path);
+		files.push(filePath);
 
-		if (file.path.indexOf('manifest.json') >= 0) {
+		if (filePath.indexOf('manifest.json') >= 0) {
 			var manifest = JSON.parse(file.contents);
 			t.ok(!manifest.background);
 		}
@@ -107,6 +111,30 @@ test.cb('should returns excluded background', t => {
 		t.ok(files.indexOf('components/jquery/jquery.min.js') === -1);
 		t.ok(files.indexOf('scripts/user-script.js') === -1);
 		t.ok(files.indexOf('scripts/background.js') === -1);
+		t.end();
+	});
+
+	stream.write(srcFile);
+	stream.end();
+});
+
+test.cb('should returns web accessible resources', t => {
+	var stream = new Manifest();
+	var files = [];
+
+	stream.on('data', function (file) {
+		var filePath = path.relative(path.join(__dirname, 'fixtures'), file.path);
+		files.push(filePath);
+
+		if (filePath.indexOf('manifest.json') !== -1) {
+			var manifest = JSON.parse(file.contents);
+			t.ok(manifest.web_accessible_resources);
+		}
+	});
+
+	stream.on('end', function () {
+		t.ok(files.indexOf('scripts/contentscript-100.js') !== -1);
+		t.ok(files.indexOf('styles/contentstyle-100.css') !== -1);
 		t.end();
 	});
 

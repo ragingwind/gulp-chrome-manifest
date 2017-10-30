@@ -116,6 +116,20 @@ module.exports = function (options) {
 			}.bind(this));
 		}
 
+		// streaming web accessible resources
+		if (manifest.web_accessible_resources && manifest.web_accessible_resources.length > 0) {
+			manifest.web_accessible_resources
+				.filter(function (src) {
+					return src.endsWith('.js') || src.endsWith('.css');
+				})
+				.forEach(function (src) {
+					this.push(new gutil.File({
+						path: path.resolve(src),
+						contents: fs.readFileSync(path.resolve(src))
+					}));
+				}.bind(this));
+		}
+
 		// add manifest.json
 		this.push(new File({
 			path: file.path,
